@@ -235,7 +235,7 @@ GetSettings()
                            szSize,
                            bJAPAN ?
                               TEXT("14") :
-                              TEXT("8"),
+                              TEXT("10"),
                            szTemp,
                            COUNTOF(szTemp),
                            szTheINIFile);
@@ -244,7 +244,7 @@ GetSettings()
 
    GetPrivateProfileString(szSettings,
                            szFace,
-			   szHelv,
+			   TEXT("Segoe UI"),
                            szTemp,
                            COUNTOF(szTemp),
                            szTheINIFile);
