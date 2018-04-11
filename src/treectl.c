@@ -18,6 +18,7 @@
 #include <commctrl.h>
 #include <winnls.h>
 #include "dbg.h"
+#include <shellapi.h>
 
 #define WS_TREESTYLE (WS_CHILD | WS_VISIBLE | LBS_NOTIFY | WS_VSCROLL | WS_HSCROLL | LBS_OWNERDRAWFIXED | LBS_NOINTEGRALHEIGHT | LBS_WANTKEYBOARDINPUT | LBS_DISABLENOSCROLL)
 
@@ -1638,8 +1639,14 @@ TCWP_DrawItem(
                                 iBitmap = BM_IND_CLOSEPLUS;
                 }
             }
-            BitBlt(hdc, x + dxText + dyBorder, y-(dyFolder/2), dxFolder, dyFolder,
-                hdcMem, iBitmap * dxFolder, (bHasFocus && bDrawSelected) ? dyFolder : 0, SRCCOPY);
+			GetTreePath(pNode, szPath);
+			HICON icon = GetPathIcon(szPath);
+			if (icon == NULL) GetDefaultIcon(FILE_ATTRIBUTE_DIRECTORY);
+			DrawIconEx(hdc, x + dxText + dyBorder, y - (dyFolder / 2), icon, 16, 16, 0, NULL, DI_NORMAL);
+			DestroyIcon(icon);
+
+            /*BitBlt(hdc, x + dxText + dyBorder, y-(dyFolder/2), dxFolder, dyFolder,
+                hdcMem, iBitmap * dxFolder, (bHasFocus && bDrawSelected) ? dyFolder : 0, SRCCOPY);*/
       }
 
       // restore text stuff and draw rect as required
@@ -2704,7 +2711,7 @@ UpdateSelection:
 
       UpdateWindow(hwndStatus);
 
-      iSelHighlight = ((LPDROPSTRUCT)lParam)->dwControlData;
+	  iSelHighlight = ((LPDROPSTRUCT)lParam)->dwControlData;
       RectTreeItem(hwndLB, iSelHighlight, (BOOL)wParam);
       break;
 
@@ -2746,7 +2753,7 @@ UpdateSelection:
       //
       // Select the new one.
       //
-      iSelHighlight = iSel;
+	  iSelHighlight = iSel;
       RectTreeItem(hwndLB, iSel, TRUE);
       break;
    }

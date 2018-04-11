@@ -7,7 +7,7 @@
 
 ********************************************************************/
 
-#define BLOCK_SIZE_GRANULARITY 1024     // must be larger than XDTA
+#define BLOCK_SIZE_GRANULARITY 4096     // must be larger than XDTA
 #define ALIGNBLOCK(x) (((x)+7)&~7)      // quad word align for Alpha
 
 #ifdef HEAPCHECK

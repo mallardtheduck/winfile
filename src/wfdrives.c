@@ -15,8 +15,10 @@
 #include "lfn.h"
 #include "wfcopy.h"
 #include <commctrl.h>
+#include <Uxtheme.h>
+#include <vsstyle.h>
 
-VOID RectDrive(INT nDrive, BOOL bFocusOn);
+VOID RectDrive(INT nDrive, BOOL bFocusOn, BOOL bHover);
 VOID InvalidateDrive(DRIVEIND driveInd);
 INT  DriveFromPoint(HWND hwnd, POINT pt);
 VOID DrawDrive(HDC hdc, INT x, INT y, DRIVEIND driveInd, BOOL bCurrent, BOOL bFocus);
@@ -248,7 +250,7 @@ InvalidateDrive(DRIVEIND driveInd)
 //
 // void NEAR PASCAL RectDrive(DRIVEIND driveInd, BOOL bDraw)
 //
-// draw the highlight rect around the drive to indicate that it is
+// draw the hilight rect around the drive to indicate that it is
 // the target of a drop action.
 //
 // in:
@@ -258,7 +260,7 @@ InvalidateDrive(DRIVEIND driveInd)
 //
 
 VOID
-RectDrive(DRIVEIND driveInd, BOOL bDraw)
+RectDrive(DRIVEIND driveInd, BOOL bDraw, BOOL bHover)
 {
    RECT rc, rcDrive;
    HBRUSH hBrush;
@@ -272,10 +274,14 @@ RectDrive(DRIVEIND driveInd, BOOL bDraw)
 
       hdc = GetDC(hwndDriveBar);
 
-      if (hBrush = CreateSolidBrush(GetSysColor(COLOR_WINDOWTEXT))) {
-         FrameRect(hdc, &rc, hBrush);
-         DeleteObject(hBrush);
-      }
+	  DRIVEIND nDriveCurrent = GetWindowLongPtr(hwndDriveBar, GWL_CURDRIVEIND);
+
+	  HBRUSH bkBrush = GetSysColorBrush(COLOR_WINDOW);
+	  FillRect(hdc, &rcDrive, bkBrush);
+	  HANDLE hOld = SelectObject(hdc, hFont);
+	  DrawDrive(hdc, rcDrive.left, rcDrive.top, driveInd, !bHover || (nDriveCurrent == driveInd), TRUE);
+	  if (hOld)
+		  SelectObject(hdc, hOld);
 
       ReleaseDC(hwndDriveBar, hdc);
 
@@ -303,7 +309,7 @@ VOID
 DrawDrive(HDC hdc, INT x, INT y, DRIVEIND driveInd, BOOL bCurrent, BOOL bFocus)
 {
    RECT rc;
-   TCHAR szTemp[2];
+   TCHAR szTemp[8];
    DWORD rgb;
    DRIVE drive;
 
@@ -316,33 +322,66 @@ DrawDrive(HDC hdc, INT x, INT y, DRIVEIND driveInd, BOOL bCurrent, BOOL bFocus)
 
    rgb = GetSysColor(COLOR_BTNTEXT);
 
-   if (bCurrent) {
-      HBRUSH hbr;
+   HWND wnd = WindowFromDC(hdc);
+   HTHEME theme = OpenThemeData(wnd, L"TOOLBAR");
+   if (theme) {
+	   int state = TS_NORMAL;
+	   if (bFocus) state = TS_HOT;
+	   if (bCurrent) {
+		   InflateRect(&rc, -dyBorder, -dyBorder);
+		   if (bFocus) state = TS_HOTCHECKED;
+		   else state = TS_CHECKED;
+	   }
 
-      if (hbr = CreateSolidBrush(GetSysColor(COLOR_HIGHLIGHT))) {
-         if (bFocus) {
-            rgb = GetSysColor(COLOR_HIGHLIGHTTEXT);
-            FillRect(hdc, &rc, hbr);
-         } else {
-            InflateRect(&rc, -dyBorder, -dyBorder);
-            FrameRect(hdc, &rc, hbr);
-         }
-         DeleteObject(hbr);
-      }
+	   DrawThemeBackground(theme, hdc, TP_BUTTON, state, &rc, NULL);
+	   RECT textRect = rc;
+	   textRect.left += dxDriveBitmap + (dyBorder * 6);
+	   textRect.top += (dyDrive - dyText) / 2;
+	   wsprintf(szTemp, L"%C:", (TCHAR)(chFirstDrive + rgiDrive[driveInd]));
+	   ///szTemp[0] = (TCHAR)(chFirstDrive + rgiDrive[driveInd]);
+	   DrawThemeText(theme, hdc, TP_BUTTON, state, szTemp, -1, DT_SINGLELINE, 0, &textRect);
+	   CloseThemeData(theme);
+
+	   /*BitBlt(hdc, x + 4 * dyBorder, y + (dyDrive - dyDriveBitmap) / 2, dxDriveBitmap, dyDriveBitmap,
+		   hdcMem, aDriveInfo[drive].iOffset, 2 * dyFolder, SRCCOPY);*/
+
+	   HICON icon = GetDriveIcon(drive);
+	   DrawIconEx(hdc, x + 4 * dyBorder, y + (dyDrive - dyDriveBitmap) / 2, icon, 16, 16, 0, NULL, DI_NORMAL);
+	   DestroyIcon(icon);
    }
+   else {
 
-   if (bFocus)
-      DrawFocusRect(hdc, &rc);
+	   if (bCurrent) {
+		   HBRUSH hbr;
 
-   szTemp[0] = (TCHAR)(chFirstDrive + rgiDrive[driveInd]);
-   SetBkMode(hdc, TRANSPARENT);
+		   if (hbr = CreateSolidBrush(GetSysColor(COLOR_HIGHLIGHT))) {
+			   if (bFocus) {
+				   rgb = GetSysColor(COLOR_HIGHLIGHTTEXT);
+				   FillRect(hdc, &rc, hbr);
+			   }
+			   else {
+				   InflateRect(&rc, -dyBorder, -dyBorder);
+				   FrameRect(hdc, &rc, hbr);
+			   }
+			   DeleteObject(hbr);
+		   }
+	   }
 
-   rgb = SetTextColor(hdc, rgb);
-   TextOut(hdc, x + dxDriveBitmap+(dyBorder*6), y + (dyDrive - dyText) / 2, szTemp, 1);
-   SetTextColor(hdc, rgb);
+	   if (bFocus)
+		   DrawFocusRect(hdc, &rc);
 
-   BitBlt(hdc, x + 4*dyBorder, y + (dyDrive - dyDriveBitmap) / 2, dxDriveBitmap, dyDriveBitmap,
-      hdcMem, aDriveInfo[drive].iOffset, 2 * dyFolder, SRCCOPY);
+	   HICON icon = GetDriveIcon(drive);
+	   DrawIconEx(hdc, x + 4 * dyBorder, y + (dyDrive - dyDriveBitmap) / 2, icon, 16, 16, 0, NULL, DI_NORMAL);
+	   DestroyIcon(icon);
+
+	   //szTemp[0] = (TCHAR)(chFirstDrive + rgiDrive[driveInd]);
+	   wsprintf(szTemp, L"%C:\\", (TCHAR)(chFirstDrive + rgiDrive[driveInd] + ('A' - 'a')));
+	   SetBkMode(hdc, TRANSPARENT);
+
+	   rgb = SetTextColor(hdc, rgb);
+	   TextOut(hdc, x + dxDriveBitmap + (dyBorder * 6), y + (dyDrive - dyText) / 2, szTemp, -1);
+	   SetTextColor(hdc, rgb);
+   }
 }
 
 
@@ -491,7 +530,7 @@ UseCurDir:
     DMMoveCopyHelper(pFrom, szPath, fShowSourceBitmaps);
 
     if (!bIconic)
-        RectDrive(driveInd, FALSE);
+        RectDrive(driveInd, FALSE, FALSE);
 }
 
 
@@ -648,7 +687,7 @@ DrivesSetDrive(
    }
 
    //
-   // do this before TC_SETDRIVE in case the tree read
+   // do this before TC_SETDRIVE incase the tree read
    // is aborted and lFreeSpace gets set to -2L
    //
    // Was -1L, ignore new cache.
@@ -686,6 +725,7 @@ DrivesWndProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam)
   RECT rc;
   static INT nDriveDoubleClick = -1;
   static INT nDriveDragging = -1;
+  static BOOL bMouseOver = FALSE;
   HWND hwndChild;
 
   TCHAR szDir[MAXPATHLEN];
@@ -848,13 +888,13 @@ DrivesWndProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam)
 
          if (nDrive == nDriveDragging && fOldShowSourceBitmaps != fShowSourceBitmaps) {
             fOldShowSourceBitmaps = fShowSourceBitmaps;
-            RectDrive(nDrive, TRUE);
+            RectDrive(nDrive, TRUE, FALSE);
             nDriveDragging = -1;
          }
 
          if ((nDrive != nDriveDragging) && (nDriveDragging >= 0)) {
 
-            RectDrive(nDriveDragging, FALSE);
+            RectDrive(nDriveDragging, FALSE, FALSE);
 
             SendMessage(hwndStatus, SB_SETTEXT, SBT_NOBORDERS|255,
                (LPARAM)szNULL);
@@ -866,7 +906,7 @@ DrivesWndProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam)
          // turn on?
 
          if ((nDrive >= 0) && (nDrive != nDriveDragging)) {
-            RectDrive(nDrive, TRUE);
+            RectDrive(nDrive, TRUE, FALSE);
             nDriveDragging = nDrive;
 
             GetSelectedDirectory(rgiDrive[nDrive]+1, szDir);
@@ -902,7 +942,7 @@ DrivesWndProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam)
              // entered, turn it on
              nDriveDragging = DriveFromPoint(lpds->hwndSink,lpds->ptDrop);
              if (nDriveDragging >= 0) {
-                RectDrive(nDriveDragging, TRUE);
+                RectDrive(nDriveDragging, TRUE, FALSE);
                 GetSelectedDirectory(rgiDrive[nDriveDragging]+1, szDir);
              } else {
                 SendMessage(hwndChild, FS_GETDIRECTORY, COUNTOF(szDir), (LPARAM)szDir);
@@ -923,7 +963,7 @@ DrivesWndProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam)
 
          UpdateWindow(hwndStatus);
              if (nDriveDragging >= 0)
-                RectDrive(nDriveDragging, FALSE);
+                RectDrive(nDriveDragging, FALSE, FALSE);
       }
 
       break;
@@ -1027,7 +1067,7 @@ DrivesWndProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam)
 
            // provide instant user feedback
            if (nDriveDoubleClick >= 0)
-              RectDrive(nDriveDoubleClick, TRUE);
+              RectDrive(nDriveDoubleClick, TRUE, FALSE);
         }
         break;
 
@@ -1092,6 +1132,38 @@ DrivesWndProc(HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam)
             lParam && (wParam == (WPARAM)nDriveCurrent));
 
           break;
+
+	  case WM_MOUSEMOVE:
+	  {
+		  TRACKMOUSEEVENT tme;
+		  tme.cbSize = sizeof(tme);
+		  tme.dwFlags = TME_LEAVE;
+		  tme.hwndTrack = hWnd;
+		  tme.dwHoverTime = HOVER_DEFAULT;
+		  TrackMouseEvent(&tme);
+
+		  POINT pt;
+		  POINTSTOPOINT(pt, lParam);
+		  nDrive = DriveFromPoint(hwndDriveBar, pt);
+
+		  if (nDrive != nDriveDoubleClick || !bMouseOver) {
+			  InvalidateDrive(nDriveDoubleClick);
+			  nDriveDoubleClick = DriveFromPoint(hwndDriveBar, pt);
+			  RectDrive(nDriveDoubleClick, TRUE, TRUE);
+			  bMouseOver = TRUE;
+		  }
+			  
+	  }
+	  break;
+
+	  case WM_MOUSELEAVE:
+	  {
+		  if (nDriveDoubleClick >= 0) {
+			  InvalidateDrive(nDriveDoubleClick);
+			  bMouseOver = FALSE;
+		  }
+	  }
+	  break;
 
 
       default:

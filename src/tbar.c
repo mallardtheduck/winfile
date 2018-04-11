@@ -19,7 +19,7 @@
 // LATER: create a specific global for this to avoid
 // redundant computations.
 
-// ASSUMES: height of combobox-padding > size of bitmap!
+// ASSUMES: height of combob-padding > size of bitmap!
 
 
 #define MAXDESCLEN              128
@@ -283,7 +283,7 @@ EnableCheckTBButtons(HWND hwndActive)
 //
 //
 // Notes:   Non re-entrant!  This is due to static szDriveSlash!
-//          (NOT multithread safe)
+//          (NOT mulithread safe)
 //
 /////////////////////////////////////////////////////////////////////
 
@@ -412,7 +412,7 @@ SelectToolbarDrive(DRIVEIND DriveInd)
 
 
 
-// value iDrive = drive to highlight added.
+// value iDrive = drive to hilight added.
 
 VOID
 FillToolbarDrives(DRIVE drive)
@@ -532,11 +532,19 @@ PaintDriveLine(DRAWITEMSTRUCT FAR *lpdis)
 
       SelectObject(hdc, hfontOld);
 
-      BitBlt(hdc, rc.left + MINIDRIVE_MARGIN,
+      /*BitBlt(hdc, rc.left + MINIDRIVE_MARGIN,
          rc.top + (dyDriveItem+DRIVELIST_BORDER - MINIDRIVE_HEIGHT) / 2,
          MINIDRIVE_WIDTH, MINIDRIVE_HEIGHT,
          hdcMem, aDriveInfo[drive].iOffset, 2 * dyFolder + dyDriveBitmap,
-         SRCCOPY);
+         SRCCOPY);*/
+
+	  HICON icon = GetDriveIcon(drive);
+
+	  DrawIconEx(hdc, rc.left + MINIDRIVE_MARGIN,
+		  rc.top + (dyDriveItem + DRIVELIST_BORDER - 16) / 2,
+		  icon, 16, 16, 0, NULL, DI_NORMAL
+	  );
+	  DestroyIcon(icon);
    }
 
    if (lpdis->itemAction == ODA_FOCUS ||
@@ -916,6 +924,12 @@ NormalHelp:
                     dwContext = dwSaveHelpContext;
                     break;
 
+				 case TBN_HOTITEMCHANGE:
+
+					 *puiRetVal = FALSE;
+					 return (0);
+
+
                  case TBN_ENDDRAG:
                  default:
                     break;
@@ -1097,10 +1111,12 @@ CreateFMToolbar(void)
    // InitToolbarButtons
 
    hwndToolbar = CreateToolbarEx(hwndFrame,
-      WS_CHILD|WS_BORDER|CCS_ADJUSTABLE|WS_CLIPSIBLINGS|TBSTYLE_TOOLTIPS|
+      WS_CHILD|WS_BORDER|CCS_ADJUSTABLE|WS_CLIPSIBLINGS|TBSTYLE_TOOLTIPS|TBSTYLE_FLAT|TBSTYLE_TRANSPARENT|
       (bToolbar ? WS_VISIBLE : 0),
       IDC_TOOLBAR, TBAR_BITMAP_COUNT, hAppInstance, IDB_TOOLBAR,
       tbButtons, 0, 0,0,0,0, sizeof(TBBUTTON));
+
+   SetClassLongPtr(hwndFrame, GCLP_HBRBACKGROUND, CreateSolidBrush(GetSysColor(COLOR_WINDOW)));
 
    if (!hwndToolbar)
       return;

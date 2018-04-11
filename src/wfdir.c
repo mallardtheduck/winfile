@@ -173,9 +173,11 @@ DrawItem(
 
    if (fShowSourceBitmaps || (hwndDragging != hwndLB) || !bDrawSelected) {
 
-         HICON hIcon = DocGetIcon(lpxdta->pDocB);
+	   HICON hIcon = GetPathIcon(lpxdta->fullPath);
+	   if(hIcon == NULL) hIcon = DocGetIcon(lpxdta->pDocB);
+	   if (hIcon == NULL) hIcon = GetDefaultIcon(lpxdta->dwAttrs);
 
-         if (hIcon != NULL)
+         if (lstrlen(MemGetFileName(lpxdta)) && hIcon != NULL)
          {
              DrawIconEx(hDC,
                     x + dyBorder,
@@ -186,6 +188,7 @@ DrawItem(
                     0,
                     NULL,
                     DI_NORMAL);
+			 DestroyIcon(hIcon);
          }
          else
          {
@@ -694,7 +697,7 @@ DirWndProc(
 
 #define lpds ((LPDROPSTRUCT)lParam)
 
-      iSelHighlight = lpds->dwControlData;
+	  iSelHighlight = lpds->dwControlData;
       DSRectItem(hwndLB, iSelHighlight, (BOOL)wParam, FALSE);
       break;
 
@@ -729,7 +732,7 @@ DirWndProc(
          DSRectItem(hwndLB, iSelHighlight, FALSE, FALSE);
 
          // Select the new one.
-         iSelHighlight = iSel;
+		 iSelHighlight = iSel;
          DSRectItem(hwndLB, iSel, TRUE, FALSE);
          break;
 

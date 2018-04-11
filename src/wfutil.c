@@ -1598,3 +1598,23 @@ BOOL TypeAheadString(WCHAR ch, LPWSTR szT)
 	return ich != 0;
 }
 
+HICON GetDriveIcon(DRIVE drive) {
+	TCHAR driveLetter = chFirstDrive + drive;
+	TCHAR path[8] = { 0 };
+	wsprintf(path, L"%C:\\", driveLetter);
+	SHFILEINFO info;
+	SHGetFileInfo(path, 0, &info, sizeof(info), SHGFI_ICON | SHGFI_SMALLICON);
+	return info.hIcon;
+}
+
+HICON GetPathIcon(LPTSTR path) {
+	SHFILEINFO info;
+	SHGetFileInfo(path, 0, &info, sizeof(info), SHGFI_ICON | SHGFI_SMALLICON);
+	return info.hIcon;
+}
+
+HICON GetDefaultIcon(INT type) {
+	SHFILEINFO info;
+	SHGetFileInfo("", type, &info, sizeof(info), SHGFI_ICON | SHGFI_SMALLICON | SHGFI_USEFILEATTRIBUTES);
+	return info.hIcon;
+}

@@ -56,6 +56,7 @@ typedef struct _XDTA {
 
    PDOCBUCKET pDocB;
 
+   WCHAR fullPath[_MAX_PATH];
    WCHAR cFileNames[1];
 } XDTA;
 

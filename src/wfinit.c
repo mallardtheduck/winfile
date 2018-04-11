@@ -795,7 +795,7 @@ CreateSavedWindows()
 
 // void  GetTextStuff(HDC hdc)
 //
-// this computes all the globals that are dependent on the
+// this computes all the globals that are dependant on the
 // currently selected font
 //
 // in:
@@ -827,7 +827,7 @@ GetTextStuff(HDC hdc)
    GetTextMetrics(hdc, &tm);
 
    //
-   // these are all dependent on the text metrics
+   // these are all dependant on the text metrics
    //
    dxDrive = dxDriveBitmap + tm.tmMaxCharWidth + (4*dyBorderx2);
    dyDrive = max(dyDriveBitmap + (4*dyBorderx2), dyText);
@@ -1002,7 +1002,7 @@ JAPANEND
    }
 
    //
-   // Read WINFILE.INI and set the appropriate variables.
+   // Read WINFILE.INI and set the approriate variables.
    //
    GetSettings();
 
@@ -1022,7 +1022,7 @@ JAPANEND
    hicoTreeDir = LoadIcon(hAppInstance, (LPTSTR) MAKEINTRESOURCE(TREEDIRICON));
    hicoDir = LoadIcon(hAppInstance, (LPTSTR) MAKEINTRESOURCE(DIRICON));
 
-   chFirstDrive = CHAR_a;
+   chFirstDrive = CHAR_A;
 
    // now build the parameters based on the font we will be using
 

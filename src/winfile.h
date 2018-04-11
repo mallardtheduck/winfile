@@ -38,6 +38,11 @@
 #ifdef HEAPCHECK
 #include "heap.h"
 #endif
+
+#pragma comment(linker,"\"/manifestdependency:type='win32' \
+name='Microsoft.Windows.Common-Controls' version='6.0.0.0' \
+processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
+
 //
 // Japan markers:
 //
@@ -451,6 +456,9 @@ BOOL  ResizeSplit(HWND hWnd, INT dxSplit);
 VOID  CheckEsc(LPTSTR);
 VOID  GetMDIWindowVolume(HWND hWnd, LPTSTR szTitle, INT size);
 BOOL TypeAheadString(WCHAR ch, LPWSTR szT);
+HICON GetDriveIcon(DRIVE drive);
+HICON GetPathIcon(LPTSTR path);
+HICON GetDefaultIcon(INT type);
 
 VOID SaveHistoryDir(HWND hwnd, LPWSTR szDir);
 BOOL GetPrevHistoryDir(BOOL forward, HWND *phwnd, LPWSTR szDir);
