@@ -14,6 +14,7 @@
 #define WIN31
 #define NTFS
 
+#define APSTUDIO_HIDDEN_SYMBOLS
 #include <windows.h>
 #include <windowsX.h>
 #include <setjmp.h>
@@ -38,6 +39,7 @@
 #ifdef HEAPCHECK
 #include "heap.h"
 #endif
+#undef APSTUDIO_HIDDEN_SYMBOLS
 
 #pragma comment(linker,"\"/manifestdependency:type='win32' \
 name='Microsoft.Windows.Common-Controls' version='6.0.0.0' \

@@ -1063,6 +1063,7 @@ NormalHelp:
    return(0);
 }
 
+HIMAGELIST tbImageList = NULL;
 
 VOID
 CreateFMToolbar(void)
@@ -1123,11 +1124,15 @@ CreateFMToolbar(void)
 
    SendMessage (hwndToolbar, TB_SETINDENT, 8, 0);
 
-   tbAddBitmap.hInst = hAppInstance;
-   tbAddBitmap.nID   = IDB_EXTRATOOLS;
+   //tbAddBitmap.hInst = hAppInstance;
+   //tbAddBitmap.nID   = IDB_EXTRATOOLS;
 
-   SendMessage(hwndToolbar, TB_ADDBITMAP, TBAR_EXTRA_BITMAPS,
-               (LPARAM) &tbAddBitmap);
+   //SendMessage(hwndToolbar, TB_ADDBITMAP, TBAR_EXTRA_BITMAPS,
+   //            (LPARAM) &tbAddBitmap);
+
+   tbImageList = ImageList_LoadImage(hAppInstance, IDB_TOOLBAR, 16, 16, RGB(255, 0, 255), IMAGE_BITMAP, LR_CREATEDIBSECTION);
+   SendMessage(hwndToolbar, TB_SETIMAGELIST, (WPARAM)0, (LPARAM)tbImageList);
+   SendMessage(hwndToolbar, TB_LOADIMAGES, (WPARAM)IDB_HIST_SMALL_COLOR, (LPARAM)HINST_COMMCTRL);
 
    GetClientRect(hwndToolbar, &rc);
    dyToolbar = rc.bottom;

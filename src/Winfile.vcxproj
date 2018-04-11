@@ -212,6 +212,7 @@
     <ClInclude Include="BagOValues.h" />
     <ClInclude Include="mpr.h" />
     <ClInclude Include="numfmt.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="spinlock.h" />
     <ClInclude Include="suggest.h" />
     <ClInclude Include="treectl.h" />
@@ -248,6 +249,11 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="mcopy.cur" />
+    <None Include="mmove.cur" />
+    <None Include="scopy.cur" />
+    <None Include="smove.cur" />
+    <None Include="split.cur" />
     <None Include="suggest.db" />
     <None Include="winfile.dlg" />
   </ItemGroup>
@@ -284,6 +290,16 @@
     <ClCompile Include="wfutil.c" />
     <ClCompile Include="winfile.c" />
     <ClCompile Include="wnetcaps.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="new_toolbar.bmp" />
+    <Image Include="toolbar.bmp" />
+    <Image Include="wbbitmap.bmp" />
+    <Image Include="wfdir.ico" />
+    <Image Include="wftrdir.ico" />
+    <Image Include="wftree.ico" />
+    <Image Include="winfile.ico" />
+    <Image Include="xtratool.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
