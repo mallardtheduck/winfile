@@ -141,13 +141,13 @@ BEGIN
     END
     POPUP       "&Options"
     BEGIN
-    MENUITEM    "&Confirmation...",     IDM_CONFIRM
+    MENUITEM    "&Settings...",     IDM_CONFIRM
     MENUITEM    "&Font...",             IDM_FONT
     MENUITEM    "Customize Tool&bar...", IDM_TOOLBARCUST
     MENUITEM    SEPARATOR
     MENUITEM    "&Toolbar",                 IDM_TOOLBAR
     MENUITEM    "&Drivebar",                IDM_DRIVEBAR
-    MENUITEM    "&Status Bar",              IDM_STATUSBAR
+    MENUITEM    "St&atus Bar",              IDM_STATUSBAR
     MENUITEM    SEPARATOR
     MENUITEM    "&Minimize on Use",     IDM_MINONRUN
     MENUITEM    "Save Settings on &Exit",   IDM_SAVESETTINGS

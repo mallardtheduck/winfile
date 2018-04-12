@@ -511,17 +511,16 @@ NewFont()
    cf.hwndOwner      = hwndFrame;
    cf.lpLogFont      = &lf;
    cf.hInstance      = hAppInstance;
-   cf.lpTemplateName = (LPTSTR) MAKEINTRESOURCE(FONTDLG);
    cf.lpfnHook       = (LPCFHOOKPROC) FontHookProc;
    cf.nSizeMin       = 4;
    cf.nSizeMax       = 36;
 
    cf.Flags          = bJAPAN ?
                           CF_SCREENFONTS | CF_SHOWHELP |
-                             CF_ENABLEHOOK | CF_ENABLETEMPLATE |
+                             CF_ENABLEHOOK |
                              CF_INITTOLOGFONTSTRUCT | CF_LIMITSIZE :
                           CF_SCREENFONTS | CF_SHOWHELP |
-                             CF_ENABLEHOOK | CF_ENABLETEMPLATE |
+                             CF_ENABLEHOOK | 
                              CF_INITTOLOGFONTSTRUCT | CF_LIMITSIZE |
                              CF_ANSIONLY;
 
@@ -651,6 +650,8 @@ ConfirmDlgProc(HWND hDlg, UINT wMsg, WPARAM wParam, LPARAM lParam)
           CheckDlgButton(hDlg, IDD_MOUSE,   bConfirmMouse);
           CheckDlgButton(hDlg, IDD_CONFIG,  bConfirmFormat);
           CheckDlgButton(hDlg, IDD_READONLY,bConfirmReadOnly);
+		  CheckDlgButton(hDlg, chx3, wTextAttribs & TA_LOWERCASE);
+		  CheckDlgButton(hDlg, chx4, wTextAttribs & TA_LOWERCASEALL);
           break;
 
       case WM_COMMAND:
@@ -679,6 +680,18 @@ ConfirmDlgProc(HWND hDlg, UINT wMsg, WPARAM wParam, LPARAM lParam)
                   WritePrivateProfileBool(szConfirmFormat,  bConfirmFormat);
 
                   WritePrivateProfileBool(szConfirmReadOnly,bConfirmReadOnly);
+
+				  if (IsDlgButtonChecked(hDlg, chx3))
+					  wTextAttribs |= TA_LOWERCASE;
+				  else
+					  wTextAttribs &= ~TA_LOWERCASE;
+
+				  if (IsDlgButtonChecked(hDlg, chx4))
+					  wTextAttribs |= TA_LOWERCASEALL;
+				  else
+					  wTextAttribs &= ~TA_LOWERCASEALL;
+
+				  WritePrivateProfileBool(szLowerCase, wTextAttribs);
 
                   EndDialog(hDlg, TRUE);
                   break;

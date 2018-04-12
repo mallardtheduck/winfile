@@ -63,12 +63,6 @@ BEGIN
     CONTROL         "&Underline", chx2, "Button", BS_AUTOCHECKBOX, 10, 95,
                     51, 10
 
-    CONTROL         "Display &Lowercase for FAT Drives", chx3, "Button", BS_AUTOCHECKBOX |
-                    WS_TABSTOP, 6, 127, 252, 10
-
-    CONTROL         "Display Lowercase for All &Drives", chx4, "Button", BS_AUTOCHECKBOX |
-                    WS_TABSTOP, 6, 139, 252, 10
-
     LTEXT           "&Color:", stc4, 10, 107, 30, 9
     COMBOBOX        cmb4, 10, 117, 75, 50, CBS_DROPDOWNLIST |
                     CBS_OWNERDRAWFIXED | CBS_AUTOHSCROLL | CBS_HASSTRINGS |
@@ -627,19 +621,22 @@ BEGIN
 END
 
 
-CONFIRMDLG DIALOG LOADONCALL MOVEABLE DISCARDABLE 20, 20, 214, 92
-CAPTION "Confirmation"
+CONFIRMDLG DIALOG LOADONCALL MOVEABLE DISCARDABLE 20, 20, 214, 130
+CAPTION "Settings"
 FONT 8, "MS Shell Dlg"
 STYLE WS_BORDER | DS_MODALFRAME | WS_CAPTION | WS_DLGFRAME | WS_POPUP | WS_SYSMENU
 BEGIN
     CONTROL "Confirm On", IDD_TEXT, "button", BS_GROUPBOX | WS_TABSTOP | WS_CHILD, 5, 3, 158, 85
-    CONTROL "File &Delete", IDD_DELETE, "button", BS_AUTOCHECKBOX | WS_TABSTOP | WS_CHILD, 10, 15, 80, 12
-    CONTROL "D&irectory Delete", IDD_SUBDEL, "button", BS_AUTOCHECKBOX | WS_TABSTOP | WS_CHILD, 10, 27, 80, 12
-    CONTROL "File &Replace", IDD_REPLACE, "button", BS_AUTOCHECKBOX | WS_TABSTOP | WS_CHILD, 10, 39, 80, 12
-    CONTROL "&Mouse Action", IDD_MOUSE, "button", BS_AUTOCHECKBOX | WS_TABSTOP | WS_CHILD, 10, 51, 80, 12
-    CONTROL "Dis&k Commands", IDD_CONFIG, "button", BS_AUTOCHECKBOX | WS_TABSTOP | WS_CHILD, 10, 63, 80, 12
-    CONTROL "Modifying &System, Hidden, Read Only files", IDD_READONLY, "button", BS_AUTOCHECKBOX | WS_TABSTOP | WS_CHILD, 10, 75, 150, 12
-    CONTROL "OK", 1, "button", BS_DEFPUSHBUTTON | WS_TABSTOP | WS_CHILD, 168, 6, 40, 14
+    CONTROL "File &Delete", IDD_DELETE, "button", BS_AUTOCHECKBOX | WS_TABSTOP | WS_CHILD, 10, 12, 80, 12
+    CONTROL "D&irectory Delete", IDD_SUBDEL, "button", BS_AUTOCHECKBOX | WS_TABSTOP | WS_CHILD, 10, 24, 80, 12
+    CONTROL "File &Replace", IDD_REPLACE, "button", BS_AUTOCHECKBOX | WS_TABSTOP | WS_CHILD, 10, 36, 80, 12
+    CONTROL "&Mouse Action", IDD_MOUSE, "button", BS_AUTOCHECKBOX | WS_TABSTOP | WS_CHILD, 10, 48, 80, 12
+    CONTROL "Dis&k Commands", IDD_CONFIG, "button", BS_AUTOCHECKBOX | WS_TABSTOP | WS_CHILD, 10, 60, 80, 12
+    CONTROL "Modifying &System, Hidden, Read Only files", IDD_READONLY, "button", BS_AUTOCHECKBOX | WS_TABSTOP | WS_CHILD, 10, 72, 150, 12
+	CONTROL "Display", IDD_TEXT, "button", BS_GROUPBOX | WS_TABSTOP | WS_CHILD, 5, 90, 158, 36
+	CONTROL "Display &Lowercase for FAT Drives", chx3, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 10, 99, 150, 12
+    CONTROL "Display Lowercase for All &Drives", chx4, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 10, 111, 150, 12
+	CONTROL "OK", 1, "button", BS_DEFPUSHBUTTON | WS_TABSTOP | WS_CHILD, 168, 6, 40, 14
     CONTROL "Cancel", 2, "button", BS_PUSHBUTTON | WS_TABSTOP | WS_CHILD, 168, 23, 40, 14
     CONTROL "&Help", IDD_HELP, "button", BS_PUSHBUTTON | WS_TABSTOP | WS_CHILD, 168, 44, 40, 14
 END
