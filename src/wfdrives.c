@@ -15,6 +15,7 @@
 #include "lfn.h"
 #include "wfcopy.h"
 #include <commctrl.h>
+#include <shlobj.h>
 #include <Uxtheme.h>
 #include <vsstyle.h>
 

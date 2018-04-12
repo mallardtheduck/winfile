@@ -808,7 +808,7 @@ ExtensionHelp:
 
 NormalHelp:
          MenuHelp((WORD)uMsg, wParam, lParam, GetMenu(hwndFrame),
-            hAppInstance, hwndStatus, dwMenuIDs);
+            hAppInstance, hwndStatus, (LPUINT)dwMenuIDs);
       } else {
          uID = uItem;
 
@@ -1295,12 +1295,12 @@ AddSep:
 
    if (tbl.idBitmap) {
       tbAddBitmap.hInst = extensions[iExt].hModule;
-      tbAddBitmap.nID   = tbl.idBitmap;
+      tbAddBitmap.nID   = (UINT_PTR)tbl.idBitmap;
       iStart = (INT)SendMessage(hwndToolbar, TB_ADDBITMAP, tbl.cButtons,
                                (LPARAM) &tbAddBitmap);
    } else {
       tbAddBitmap.hInst = 0;
-      tbAddBitmap.nID   = (UINT)tbl.hBitmap;
+      tbAddBitmap.nID   = (UINT_PTR)tbl.hBitmap;
       iStart = (INT)SendMessage(hwndToolbar, TB_ADDBITMAP, tbl.cButtons,
                                (LPARAM) &tbAddBitmap);
    }
@@ -1346,7 +1346,6 @@ FreeToolbarExtensions(VOID)
 VOID
 SaveRestoreToolbar(BOOL bSave)
 {
-   static LPTSTR aNames[] = { szSettings, szTheINIFile } ;
    static TCHAR  szSubKey[] = TEXT("Software\\Microsoft\\File Manager\\Settings");
    static TCHAR  szValueName [] = TEXT("ToolbarWindow");
 
