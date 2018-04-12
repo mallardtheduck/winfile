@@ -299,6 +299,7 @@ MemoryError:
          lpxdta->qFileSize.HighPart = lfndta.fd.nFileSizeHigh;
 
          lstrcpy(MemGetFileName(lpxdta), pszNewPath);
+		 lstrcpy(lpxdta->fullPath, pszNewPath);
          MemGetAlternateFileName(lpxdta)[0] = CHAR_NULL;
 
          if (bLFN)
