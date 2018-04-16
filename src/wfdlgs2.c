@@ -614,14 +614,22 @@ JAPANEND
 
       case IDCANCEL:
 
-         if (pCopyInfo)
-            pCopyInfo->bUserAbort = TRUE;
+		  if (pCopyInfo)
+			  pCopyInfo->bUserAbort = TRUE;
 
 SuperDlgExit:
 
          EndDialog(hDlg, 0);
          break;
 
+	  case IDD_KK_BROWSE:
+	  {
+		  TCHAR path[MAX_PATH] = { 0 };
+		  if (GetFolderSelection(hDlg, path, L"Select Destination")) {
+			  SetDlgItemText(hDlg, IDD_TO, path);
+		  }
+	  }
+		  break;
       case IDOK:
 
          len = (UINT)(SendDlgItemMessage(hDlg, IDD_FROM, EM_LINELENGTH,

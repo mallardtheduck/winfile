@@ -216,6 +216,7 @@
 
 #define IDD_KK_TEXTTO         2001
 #define IDD_KK_TEXTFROM       2002
+#define IDD_KK_BROWSE		  2004
 
 #define IDD_DIRS 		2003
 

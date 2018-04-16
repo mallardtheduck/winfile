@@ -461,6 +461,7 @@ BOOL TypeAheadString(WCHAR ch, LPWSTR szT);
 HICON GetDriveIcon(DRIVE drive);
 HICON GetPathIcon(LPTSTR path);
 HICON GetDefaultIcon(INT type);
+BOOL GetFolderSelection(HWND hWnd, LPTSTR szBuf, LPCTSTR szTitle);
 
 VOID SaveHistoryDir(HWND hwnd, LPWSTR szDir);
 BOOL GetPrevHistoryDir(BOOL forward, HWND *phwnd, LPWSTR szDir);

@@ -9,6 +9,7 @@ Enhanced with more modern Windows user interface:
 3. "Drive selection line" modified to use toolbar styling.
 4. "Correct" file/folder/drive icons taken from Shell API.
 5. New high-colour toolbar icons based on icons from the Visual Studio Image Library.
+6. Default listing font changed to Segoe UI size 10.
 
 ## History
 

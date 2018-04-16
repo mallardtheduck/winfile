@@ -13,6 +13,7 @@
 #include "lfn.h"
 #include <commctrl.h>
 #include <stdlib.h>
+#include <shlobj.h>
 
 LPTSTR CurDirCache[26];
 
@@ -1617,4 +1618,24 @@ HICON GetDefaultIcon(INT type) {
 	SHFILEINFO info;
 	SHGetFileInfo("", type, &info, sizeof(info), SHGFI_ICON | SHGFI_SMALLICON | SHGFI_USEFILEATTRIBUTES);
 	return info.hIcon;
+}
+
+BOOL GetFolderSelection(HWND hWnd, LPTSTR szBuf, LPCTSTR szTitle){
+	LPITEMIDLIST pidl = NULL;
+	BROWSEINFO   bi = { 0 };
+	BOOL         bResult = FALSE;
+
+	bi.hwndOwner = hWnd;
+	bi.pszDisplayName = szBuf;
+	bi.pidlRoot = NULL;
+	bi.lpszTitle = szTitle;
+	bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_USENEWUI;
+
+	if ((pidl = SHBrowseForFolder(&bi)) != NULL)
+	{
+		bResult = SHGetPathFromIDList(pidl, szBuf);
+		CoTaskMemFree(pidl);
+	}
+
+	return bResult;
 }
