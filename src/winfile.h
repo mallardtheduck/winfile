@@ -28,6 +28,7 @@
 #include "fmifs.h"
 #include <shellapi.h>
 #include <shlwapi.h>
+#include <strsafe.h>
 #include "suggest.h"
 #include "numfmt.h"
 
